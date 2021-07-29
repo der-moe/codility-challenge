@@ -59,10 +59,10 @@ def getTotalScore():
     if data['building']['totalEmployeesIn'] < 1 and lightOn:
         warnings.append("Obwohl sich niemand im Gebäude befindet, brennen in Büros noch Licht")
     if [sumScore / len(data['rooms'])] < 9:
-        warnings.append("Der Durschnitt der Büros liegt unter 9.")
+        warnings.append(1)
     if [sumScore / len(data['rooms'])] < 7:
-        warnings.append("Der Durschnitt der Büros liegt unter 7.")
+        warnings.append(2)
     if [sumScore / len(data['rooms'])] < 5:
-        warnings.append("Der Durschnitt der Büros liegt unter 5.")
+        warnings.append(3)
 
     return warnings
