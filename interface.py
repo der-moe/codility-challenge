@@ -24,6 +24,7 @@ def get_color(score):
     else:
         return "red"
 
+
 def call_api(room_val):
     global score, color
     room_val = room_val.upper()
@@ -33,14 +34,20 @@ def call_api(room_val):
         score = 0
     color = get_color(score)
     window["room"].update("Score: %s" % score, background_color=color)
-    window["hints-room"].update(hints)
+    window["hints-room"].update('\n'.join(hints))
     hints = Score.getTotalScore()
     score = 5 - len(hints)
     if score < 0:
         score = 0
     color = get_color(score)
     window["building"].update("Score: %s" % score, background_color=color)
-    window["hints-building"].update(hints)
+    warn = []
+    if len(hints) > 0:
+        if not isinstance(hints[0], (int, float)):
+            warn.append(hints[0])
+        if isinstance(hints[-1], (int, float)):
+            warn.append("Der Durchschnitt aller Büroräume ist unter %s" % hints[-1])
+    window["hints-building"].update('\n'.join(warn))
 
 
 
@@ -50,16 +57,16 @@ layout = [[sg.Text("Choose a room:", size=(15, 1)),
            sg.InputText('A', key="room-val", tooltip="Type the key of a room (A-Z)", size=(15, 1)),
            sg.Button("Refresh", key="refresh")],
           [sg.Text("Your room score:", size=(15, 1)), sg.Text("", text_color="black", size=(20, 1), key="room")],
-          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 4), key="hints-room")],
+          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 5), key="hints-room")],
           [sg.Text("Building score:", size=(15, 1)), sg.Text("", size=(20, 1), text_color="black", key="building")],
-          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 3), key="hints-building")]]
+          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 4), key="hints-building")]]
 
 window = sg.Window(title="Smart Office Scanner", layout=layout)
 # call_api()
 while True:
     event, values = window.read(timeout=15000, timeout_key="auto-update")
     room_val = window["room-val"].get()
-    print(room_val)
+    # print(room_val)
     if check_char(room_val):
         if event == 'refresh':
             call_api(room_val)

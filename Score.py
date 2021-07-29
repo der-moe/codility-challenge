@@ -1,17 +1,14 @@
-import json
-
-
-def getIndividualScore(id, data = None):
+def getIndividualScore(id, data=None):
     if data is None:
         data = __getData()
     room = __getRoom(data, id)
     sensors = room['sensors']
-    print(room)
-    print(sensors)
+    # print(room)
+    # print(sensors)
 
     warnings = []
 
-    if sensors['lightOn'] and data['solarPowerOutput'] > 10:
+    if sensors['lightOn'] and data['solarPowerOutput'] > 50:
         warnings = warnings.append("Das Licht ist angeschaltet, obwohl es Hell ist")
     if sensors['windowsOpen'] and sensors['airConditioningRunning']:
         warnings.append("Das Fenster ist offen, obwohl die Klimaanlage angeschlatet ist")
@@ -46,6 +43,7 @@ def __getData():
         data = json.loads(url.read().decode())
     return data
 
+
 def getTotalScore():
     warnings = []
     data = __getData()
@@ -58,11 +56,11 @@ def getTotalScore():
 
     if data['building']['totalEmployeesIn'] < 1 and lightOn:
         warnings.append("Obwohl sich niemand im Gebäude befindet, brennen in Büros noch Licht")
-    if sumScore / len(data['rooms']) < 4:
-        warnings.append(1)
-    if sumScore / len(data['rooms']) < 3:
-        warnings.append(2)
-    if sumScore / len(data['rooms']) < 2:
-        warnings.append(3)
+    if sumScore / len(data['rooms']) < 4.5:
+        warnings.append(4.5)
+    if sumScore / len(data['rooms']) < 3.5:
+        warnings.append(3.5)
+    if sumScore / len(data['rooms']) < 2.5:
+        warnings.append(2.5)
 
     return warnings
