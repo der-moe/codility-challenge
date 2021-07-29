@@ -52,7 +52,7 @@ def getTotalScore():
     sumScore = 0
     lightOn = false
     for x in data['rooms']:
-        sumScore += len(getIndividualScore(x['id']))
+        sumScore += len(getIndividualScore(x['id'], data))
         if x['lightOn'] == True:
             lightOn = True
 
