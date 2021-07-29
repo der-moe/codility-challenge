@@ -1,6 +1,6 @@
 def getIndividualScore(id, data=None):
     if data is None:
-        data = __getData()
+        data = getData()
     room = __getRoom(data, id)
     sensors = room['sensors']
     # print(room)
@@ -37,16 +37,15 @@ def __getRoom(data, id):
             return x
 
 
-def __getData():
+def getData():
     import urllib.request, json
     with urllib.request.urlopen("https://rvj6rnbpxj.execute-api.eu-central-1.amazonaws.com/prod/live-data") as url:
         data = json.loads(url.read().decode())
     return data
 
 
-def getTotalScore():
+def getTotalScore(data):
     warnings = []
-    data = __getData()
     sumScore = 0
     lightOn = False
     for x in data['rooms']:

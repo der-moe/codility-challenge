@@ -27,15 +27,16 @@ def get_color(score):
 
 def call_api(room_val):
     global score, color
+    data = Score.getData()
     room_val = room_val.upper()
-    hints = Score.getIndividualScore(room_val)
+    hints = Score.getIndividualScore(room_val, data)
     score = 5 - len(hints)
     if score < 0:
         score = 0
     color = get_color(score)
     window["room"].update("Score: %s" % score, background_color=color)
     window["hints-room"].update('\n'.join(hints))
-    hints = Score.getTotalScore()
+    hints = Score.getTotalScore(data)
     score = 5 - len(hints)
     if score < 0:
         score = 0
@@ -62,7 +63,7 @@ layout = [[sg.Text("Choose a room:", size=(15, 1)),
           [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 4), key="hints-building")]]
 
 window = sg.Window(title="Smart Office Scanner", layout=layout)
-# call_api()
+
 while True:
     event, values = window.read(timeout=15000, timeout_key="auto-update")
     room_val = window["room-val"].get()
