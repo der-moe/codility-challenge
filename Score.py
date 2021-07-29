@@ -1,8 +1,8 @@
 import json
 
 def getInividualScore(id):
-    data = __getData(id)
-    room = __getRoom(data)
+    data = __getData()
+    room = __getRoom(data, id)
     sensors = room['sensors']
     print(room)
     print(sensors)
@@ -32,18 +32,19 @@ def getInividualScore(id):
     return warnings
 
 
-def __getRoom(data):
+def __getRoom(data, id):
     for x in data['rooms']:
         if x['id'] == id:
             return x
 
 
-def __getData(id):
+def __getData():
     import urllib.request, json
     with urllib.request.urlopen("https://rvj6rnbpxj.execute-api.eu-central-1.amazonaws.com/prod/live-data") as url:
         data = json.loads(url.read().decode())
     return data
 
 def getTotalScore():
+    data = __getData()
     warnings = []
     return warnings
