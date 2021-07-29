@@ -50,19 +50,19 @@ def getTotalScore():
     warnings = []
     data = __getData()
     sumScore = 0
-    lightOn = false
+    lightOn = False
     for x in data['rooms']:
-        sumScore += len(getIndividualScore(x['id'], data))
-        if x['lightOn'] == True:
+        sumScore += 5 - len(getIndividualScore(x['id'], data))
+        if x['sensors']['lightOn']:
             lightOn = True
 
     if data['building']['totalEmployeesIn'] < 1 and lightOn:
         warnings.append("Obwohl sich niemand im Gebäude befindet, brennen in Büros noch Licht")
-    if [sumScore / len(data['rooms'])] < 9:
+    if sumScore / len(data['rooms']) < 4:
         warnings.append(1)
-    if [sumScore / len(data['rooms'])] < 7:
+    if sumScore / len(data['rooms']) < 3:
         warnings.append(2)
-    if [sumScore / len(data['rooms'])] < 5:
+    if sumScore / len(data['rooms']) < 2:
         warnings.append(3)
 
     return warnings

@@ -1,5 +1,6 @@
 import random
 import PySimpleGUI as sg
+import Score
 
 
 def check_char(c):
@@ -14,14 +15,33 @@ def check_char(c):
 
 
 def get_color(score):
-    if score > 80:
+    if score > 4:
         return "green"
-    elif score > 50:
+    elif score > 3:
         return "yellow"
-    elif score > 20:
+    elif score > 2:
         return "orange"
     else:
         return "red"
+
+def call_api(room_val):
+    global score, color
+    room_val = room_val.upper()
+    hints = Score.getIndividualScore(room_val)
+    score = 5 - len(hints)
+    if score < 0:
+        score = 0
+    color = get_color(score)
+    window["room"].update("Score: %s" % score, background_color=color)
+    window["hints-room"].update(hints)
+    hints = Score.getTotalScore()
+    score = 5 - len(hints)
+    if score < 0:
+        score = 0
+    color = get_color(score)
+    window["building"].update("Score: %s" % score, background_color=color)
+    window["hints-building"].update(hints)
+
 
 
 sg.theme("DarkBlue")
@@ -29,26 +49,22 @@ sg.theme("DarkBlue")
 layout = [[sg.Text("Choose a room:", size=(15, 1)),
            sg.InputText('A', key="room-val", tooltip="Type the key of a room (A-Z)", size=(15, 1)),
            sg.Button("Refresh", key="refresh")],
-          [sg.Text("Your room score:", size=(15, 1)), sg.Text("Good 🙂", background_color="green", text_color="black", size=(20, 1), key="room")],
-          [sg.Text("Building score:", size=(15, 1)), sg.Text("Bad 😐", size=(20, 1), key="building")]]
+          [sg.Text("Your room score:", size=(15, 1)), sg.Text("", text_color="black", size=(20, 1), key="room")],
+          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 4), key="hints-room")],
+          [sg.Text("Building score:", size=(15, 1)), sg.Text("", size=(20, 1), text_color="black", key="building")],
+          [sg.Text("Hinweise:", size=(15, 1)), sg.Text("", size=(30, 3), key="hints-building")]]
 
 window = sg.Window(title="Smart Office Scanner", layout=layout)
-
+# call_api()
 while True:
     event, values = window.read(timeout=15000, timeout_key="auto-update")
     room_val = window["room-val"].get()
     print(room_val)
     if check_char(room_val):
         if event == 'refresh':
-            # ------ call api
-            score = random.randint(0, 100)
-            color = get_color(score)
-            window["room"].update("Score: %s" % score, background_color=color)
+            call_api(room_val)
         if event == 'auto-update':
-            # ------ call api
-            score = random.randint(0, 100)
-            color = get_color(score)
-            window["room"].update("Medium 😟")
+            call_api(room_val)
     if window.was_closed():
         break
 
