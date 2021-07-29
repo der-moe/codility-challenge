@@ -62,7 +62,7 @@ def getTotalScore():
         warnings.append("Der Durschnitt der Büros liegt unter 9.")
     if [sumScore / len(data['rooms'])] < 7:
         warnings.append("Der Durschnitt der Büros liegt unter 7.")
-    if [sumScore / len(data['rooms'])] < 7:
+    if [sumScore / len(data['rooms'])] < 5:
         warnings.append("Der Durschnitt der Büros liegt unter 5.")
 
     return warnings
