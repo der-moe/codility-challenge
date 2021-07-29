@@ -1,7 +1,9 @@
 import json
 
-def getInividualScore(id):
-    data = __getData()
+
+def getIndividualScore(id, data = None):
+    if data is None:
+        data = __getData()
     room = __getRoom(data, id)
     sensors = room['sensors']
     print(room)
@@ -11,9 +13,9 @@ def getInividualScore(id):
 
     if sensors['lightOn'] and data['solarPowerOutput'] > 10:
         warnings = warnings.append("Das Licht ist angeschaltet, obwohl es Hell ist")
-    if sensors['windowsOpen'] and sensors['airConditioningRunning'] :
+    if sensors['windowsOpen'] and sensors['airConditioningRunning']:
         warnings.append("Das Fenster ist offen, obwohl die Klimaanlage angeschlatet ist")
-    if sensors['windowsOpen'] and  sensors['heaterRunning']:
+    if sensors['windowsOpen'] and sensors['heaterRunning']:
         warnings.append("Das Fenster ist offen, obwohl die Heizung angeschlatet ist")
     if sensors['airConditioningRunning'] and sensors['heaterRunning']:
         warnings.append("Sowohl Heizung, als auch Klimaanlage sind eingeschaltet")
@@ -45,6 +47,22 @@ def __getData():
     return data
 
 def getTotalScore():
-    data = __getData()
     warnings = []
+    data = __getData()
+    sumScore = 0
+    lightOn = false
+    for x in data['rooms']:
+        sumScore += len(getIndividualScore(x['id']))
+        if x['lightOn'] == True:
+            lightOn = True
+
+    if data['building']['totalEmployeesIn'] < 1 and lightOn:
+        warnings.append("Obwohl sich niemand im Gebäude befindet, brennen in Büros noch Licht")
+    if [sumScore / len(data['rooms'])] < 9:
+        warnings.append("Der Durschnitt der Büros liegt unter 9.")
+    if [sumScore / len(data['rooms'])] < 7:
+        warnings.append("Der Durschnitt der Büros liegt unter 7.")
+    if [sumScore / len(data['rooms'])] < 7:
+        warnings.append("Der Durschnitt der Büros liegt unter 5.")
+
     return warnings
